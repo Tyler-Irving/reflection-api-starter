@@ -37,7 +37,11 @@ public class ReflectionRepository {
     }
 
     public Reflection find(Integer id) {
-        return jdbc.queryForObject("SELECT id, date FROM reflections WHERE id = ?", this::mapper, id);
+        try {
+            return jdbc.queryForObject("SELECT id, date FROM reflections WHERE id = ?", this::mapper, id);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
     public Reflection update(Reflection reflection) {
@@ -58,4 +62,3 @@ public class ReflectionRepository {
         );
     }
 }
-

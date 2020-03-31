@@ -2,12 +2,16 @@ package org.basecampcodingacademy.reflections.controllers;
 
 import org.basecampcodingacademy.reflections.db.ReflectionRepository;
 import org.basecampcodingacademy.reflections.domain.Reflection;
+import org.basecampcodingacademy.reflections.exception.DateErrorMessageReflection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/reflections")
@@ -22,8 +26,11 @@ public class ReflectionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Reflection create(@RequestBody Reflection reflection) {
-        return reflections.create(reflection);
+    public Reflection create(@RequestBody Reflection reflection) throws DateErrorMessageReflection {
+        if (Objects.isNull(reflections.find(reflection.date))) {
+            return reflections.create(reflection);
+        }
+        throw new DateErrorMessageReflection(reflection.date);
     }
 
     @GetMapping("/today")
@@ -42,5 +49,13 @@ public class ReflectionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         reflections.delete(id);
+    }
+
+    @ExceptionHandler ({ DateErrorMessageReflection.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleDateErrorMessageReflectionException(DateErrorMessageReflection ex) {
+        var errorMap = new HashMap<String, String>();
+        errorMap.put("error", "Reflection for " + ex.date.toString() + " already exists");
+        return errorMap;
     }
 }

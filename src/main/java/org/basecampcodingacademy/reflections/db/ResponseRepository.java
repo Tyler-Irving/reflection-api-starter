@@ -20,6 +20,7 @@ public class ResponseRepository {
         return jdbc.query("SELECT id, reflectionId, userUsername FROM responses", this::mapper);
     }
 
+
     public Response create(Response response) {
         return jdbc.queryForObject(
                 "INSERT INTO responses (userUsername, reflectionId) VALUES (?, ?) RETURNING id, userUsername, reflectionId",
@@ -32,15 +33,20 @@ public class ResponseRepository {
 
     public Response find() {
         try {
-            return jdbc.queryForObject("SELECT id, reflectionId FROM responses WHERE reflectionId = ? LIMIT 1", this::mapper);
+            return jdbc.queryForObject("SELECT id, reflectionId, userUsername FROM responses WHERE reflectionId = ? LIMIT 1", this::mapper);
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
     }
 
-    public Response find(Integer id) {
-        return jdbc.queryForObject("SELECT id, reflectionId, userUsername FROM responses WHERE id = ?", this::mapper, id);
-    }
+//    public Response find(Integer id) {
+//        try {
+//            return jdbc.queryForObject("SELECT id, reflectionId, userUsername FROM responses WHERE id = ?", this::mapper, id);
+//        }
+//        catch (EmptyResultDataAccessException ex){
+//            return null;
+//        }
+//    }
 
     public Response update(Response response) {
         return jdbc.queryForObject(

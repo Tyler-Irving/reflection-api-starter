@@ -15,4 +15,3 @@ public class Answer {
         this.content = content;
     }
 }
-

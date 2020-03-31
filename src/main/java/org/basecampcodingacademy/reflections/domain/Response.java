@@ -8,6 +8,7 @@ public class Response {
     public String userUsername;
     public List<Object> answers;
 
+
     public Response() {}
 
     public Response(Integer id, Integer reflectionId, String userUsername, List<Object> answers) {
@@ -16,4 +17,5 @@ public class Response {
         this.userUsername = userUsername;
         this.answers = answers;
     }
+
 }
